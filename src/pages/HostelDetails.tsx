@@ -34,7 +34,7 @@ export default function HostelDetails() {
   };
 
   const openMap = () => {
-    window.open(`https://www.google.com/maps?q=${hostel.latitude},${hostel.longitude}`, "_blank");
+    window.open(`https://www.google.com/maps?q=${hostel.latitude},${hostel.longitude}`, "_blank", "noopener,noreferrer");
   };
 
   return (
