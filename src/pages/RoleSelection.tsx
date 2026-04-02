@@ -53,7 +53,7 @@ export default function RoleSelection() {
           ))}
         </div>
         {/* Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/40 to-background" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/70 to-background" />
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
           <div className="flex items-center gap-2 mb-3">
             <MapPin className="w-8 h-8 text-primary" />
