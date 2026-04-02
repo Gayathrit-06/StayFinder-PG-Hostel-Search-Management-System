@@ -100,13 +100,16 @@ export default function HostelDetails() {
             </p>
 
             <div className="flex gap-3">
-              <button onClick={openMap} className="flex items-center gap-2 px-5 py-3 rounded-xl border border-primary text-primary font-semibold hover:bg-primary/5 transition-colors">
-                <ExternalLink className="w-4 h-4" /> View on Map
+              <button onClick={openMap} className="flex items-center gap-2 px-6 py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-semibold shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 hover:scale-[1.02] transition-all duration-200">
+                <MapPin className="w-5 h-5" /> View on Map
               </button>
-              <button onClick={() => setShowBooking(true)} className="gradient-btn flex-1">
+              <button onClick={() => setShowBooking(true)} className="gradient-btn flex-1 py-3.5 text-lg">
                 Book Now
               </button>
             </div>
+            <p className="text-xs text-muted-foreground mt-2 flex items-center gap-1">
+              <ExternalLink className="w-3 h-3" /> Opens Google Maps in a new tab with live directions
+            </p>
 
             {/* Booking modal */}
             {showBooking && (
