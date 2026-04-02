@@ -28,11 +28,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const login = useCallback((email: string, _password: string, role: UserRole) => {
     const user = users.find(u => u.email === email && u.role === role);
     if (user) { setCurrentUser(user); return true; }
-    // Auto-create for demo
-    const newUser: User = { id: `u${Date.now()}`, name: email.split("@")[0], email, role };
-    setUsers(prev => [...prev, newUser]);
-    setCurrentUser(newUser);
-    return true;
+    return false;
   }, [users]);
 
   const register = useCallback((name: string, email: string, _password: string, role: UserRole) => {
