@@ -22,6 +22,16 @@ export function Navbar() {
         <Link to={dashboardPath} className="text-xl font-bold gradient-text">
           StayFinder
         </Link>
+        {currentUser.role === "user" && (
+          <div className="flex items-center gap-1">
+            <Link to="/customer/search" className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">
+              <Search className="w-4 h-4" /> Search
+            </Link>
+            <Link to="/customer/bookings" className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">
+              <Package className="w-4 h-4" /> Bookings
+            </Link>
+          </div>
+        )}
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted">
             <User className="w-4 h-4 text-primary" />
