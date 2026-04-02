@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useApp } from "@/context/AppContext";
 import { Navbar } from "@/components/Navbar";
 import { BackButton } from "@/components/BackButton";
