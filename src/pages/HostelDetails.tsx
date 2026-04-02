@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useApp } from "@/context/AppContext";
 import { Navbar } from "@/components/Navbar";
 import { BackButton } from "@/components/BackButton";
@@ -112,9 +113,11 @@ export default function HostelDetails() {
             </p>
 
             {/* Booking modal */}
-            {showBooking && (
-              <div className="mt-6 glass-card p-6 animate-scale-in">
-                <h3 className="font-bold text-foreground mb-4">Book This Hostel</h3>
+            <Dialog open={showBooking} onOpenChange={setShowBooking}>
+              <DialogContent className="sm:max-w-md">
+                <DialogHeader>
+                  <DialogTitle>Book {hostel.name}</DialogTitle>
+                </DialogHeader>
                 <label className="text-sm text-muted-foreground">Duration (months)</label>
                 <input type="number" min={1} max={24} value={duration} onChange={e => setDuration(Number(e.target.value))}
                   className="w-full mt-1 mb-3 px-4 py-2.5 rounded-xl bg-muted border border-border focus:border-primary outline-none text-foreground" />
@@ -126,8 +129,8 @@ export default function HostelDetails() {
                   <button onClick={() => setShowBooking(false)} className="flex-1 py-2.5 rounded-xl border border-border text-muted-foreground hover:bg-muted transition-colors">Cancel</button>
                   <button onClick={handleBook} className="flex-1 gradient-btn text-center">Confirm Booking</button>
                 </div>
-              </div>
-            )}
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
       </div>
