@@ -1,6 +1,6 @@
 import { useApp } from "@/context/AppContext";
 import { useNavigate, Link } from "react-router-dom";
-import { LogOut, User } from "lucide-react";
+import { LogOut, User, Search, Package } from "lucide-react";
 
 export function Navbar() {
   const { currentUser, logout } = useApp();
