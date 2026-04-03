@@ -51,7 +51,7 @@ export default function AuthPage() {
         </div>
         <div className="glass-card p-8">
           <h2 className="text-2xl font-bold text-center mb-1 gradient-text">
-            {isLogin ? "Welcome Back" : "Create Account"}
+            {isAdminRole ? "Admin Login" : (isLogin ? "Welcome Back" : "Create Account")}
           </h2>
           <p className="text-center text-muted-foreground mb-6 text-sm">
             {roleLabel}
