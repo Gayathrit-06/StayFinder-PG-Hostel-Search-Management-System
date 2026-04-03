@@ -12,6 +12,7 @@ export default function AuthPage() {
   const navigate = useNavigate();
 
   const [isLogin, setIsLogin] = useState(true);
+  const isAdminRole = (role || "user") === "admin";
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
