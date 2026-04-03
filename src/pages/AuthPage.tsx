@@ -92,12 +92,14 @@ export default function AuthPage() {
               {isAdminRole ? "Login" : (isLogin ? "Login" : "Register")}
             </button>
           </form>
-          <p className="text-center text-sm text-muted-foreground mt-4">
-            {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
-            <button onClick={() => { setIsLogin(!isLogin); setError(""); }} className="text-primary font-semibold hover:underline">
-              {isLogin ? "Register" : "Login"}
-            </button>
-          </p>
+          {!isAdminRole && (
+            <p className="text-center text-sm text-muted-foreground mt-4">
+              {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
+              <button onClick={() => { setIsLogin(!isLogin); setError(""); }} className="text-primary font-semibold hover:underline">
+                {isLogin ? "Register" : "Login"}
+              </button>
+            </p>
+          )}
         </div>
       </div>
     </div>
