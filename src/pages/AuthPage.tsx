@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useApp } from "@/context/AppContext";
 import { UserRole } from "@/types";
 import { BackButton } from "@/components/BackButton";
+import { Footer } from "@/components/Footer";
 import { Mail, Lock, User } from "lucide-react";
 
 export default function AuthPage() {
