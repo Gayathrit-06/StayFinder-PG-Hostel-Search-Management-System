@@ -16,7 +16,9 @@ export const mockUsers: User[] = [
   { id: "u2", name: "Priya Sharma", email: "priya@test.com", password: "priya123", role: "user" },
   { id: "o1", name: "Suresh Reddy", email: "suresh@owner.com", password: "suresh123", role: "owner" },
   { id: "o2", name: "Meena Devi", email: "meena@owner.com", password: "meena123", role: "owner" },
-  { id: "a1", name: "Admin User", email: "admin@admin.com", password: "admin123", role: "admin" },
+  { id: "a1", name: "Admin One", email: "admin1@gmail.com", password: "admin123", role: "admin" },
+  { id: "a2", name: "Admin Two", email: "admin2@gmail.com", password: "admin456", role: "admin" },
+  { id: "a3", name: "Admin Three", email: "admin3@gmail.com", password: "admin789", role: "admin" },
 ];
 
 export const mockHostels: Hostel[] = [

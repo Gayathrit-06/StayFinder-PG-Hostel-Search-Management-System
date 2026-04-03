@@ -12,6 +12,7 @@ export default function AuthPage() {
   const navigate = useNavigate();
 
   const [isLogin, setIsLogin] = useState(true);
+  const isAdminRole = (role || "user") === "admin";
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -22,17 +23,19 @@ export default function AuthPage() {
 
   const roleLabel = userRole === "user" ? "Customer" : userRole === "owner" ? "Owner (Admin)" : "Super Admin";
 
+  const isAdmin = userRole === "admin";
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    if (!email || !password || (!isLogin && !name)) {
+    if (!email || !password || (!isLogin && !isAdmin && !name)) {
       setError("Please fill all fields");
       return;
     }
-    if (isLogin) {
+    if (isLogin || isAdmin) {
       const success = login(email, password, userRole);
       if (success) navigate(redirectPath);
-      else setError("Invalid credentials");
+      else setError(isAdmin ? "Invalid admin credentials" : "Invalid credentials");
     } else {
       const success = register(name, email, password, userRole);
       if (success) navigate(redirectPath);
@@ -48,7 +51,7 @@ export default function AuthPage() {
         </div>
         <div className="glass-card p-8">
           <h2 className="text-2xl font-bold text-center mb-1 gradient-text">
-            {isLogin ? "Welcome Back" : "Create Account"}
+            {isAdminRole ? "Admin Login" : (isLogin ? "Welcome Back" : "Create Account")}
           </h2>
           <p className="text-center text-muted-foreground mb-6 text-sm">
             {roleLabel}
@@ -59,7 +62,7 @@ export default function AuthPage() {
             </div>
           )}
           <form onSubmit={handleSubmit} className="space-y-4">
-            {!isLogin && (
+            {!isLogin && !isAdminRole && (
               <div className="relative">
                 <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <input
@@ -86,15 +89,17 @@ export default function AuthPage() {
               />
             </div>
             <button type="submit" className="w-full gradient-btn text-center">
-              {isLogin ? "Login" : "Register"}
+              {isAdminRole ? "Login" : (isLogin ? "Login" : "Register")}
             </button>
           </form>
-          <p className="text-center text-sm text-muted-foreground mt-4">
-            {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
-            <button onClick={() => { setIsLogin(!isLogin); setError(""); }} className="text-primary font-semibold hover:underline">
-              {isLogin ? "Register" : "Login"}
-            </button>
-          </p>
+          {!isAdminRole && (
+            <p className="text-center text-sm text-muted-foreground mt-4">
+              {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
+              <button onClick={() => { setIsLogin(!isLogin); setError(""); }} className="text-primary font-semibold hover:underline">
+                {isLogin ? "Register" : "Login"}
+              </button>
+            </p>
+          )}
         </div>
       </div>
     </div>
