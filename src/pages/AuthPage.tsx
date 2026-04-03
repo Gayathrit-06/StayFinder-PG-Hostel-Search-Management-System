@@ -22,17 +22,19 @@ export default function AuthPage() {
 
   const roleLabel = userRole === "user" ? "Customer" : userRole === "owner" ? "Owner (Admin)" : "Super Admin";
 
+  const isAdmin = userRole === "admin";
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    if (!email || !password || (!isLogin && !name)) {
+    if (!email || !password || (!isLogin && !isAdmin && !name)) {
       setError("Please fill all fields");
       return;
     }
-    if (isLogin) {
+    if (isLogin || isAdmin) {
       const success = login(email, password, userRole);
       if (success) navigate(redirectPath);
-      else setError("Invalid credentials");
+      else setError(isAdmin ? "Invalid admin credentials" : "Invalid credentials");
     } else {
       const success = register(name, email, password, userRole);
       if (success) navigate(redirectPath);
