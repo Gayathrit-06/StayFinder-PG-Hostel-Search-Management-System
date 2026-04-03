@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Users, Building2, Shield, MapPin, Star } from "lucide-react";
+import { Footer } from "@/components/Footer";
 
 const HERO_IMAGES = [
   "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=800&q=80",
