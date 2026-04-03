@@ -1,6 +1,19 @@
-import React, { createContext, useContext, useState, useCallback } from "react";
+import React, { createContext, useContext, useState, useCallback, useEffect } from "react";
 import { User, UserRole, Hostel, Booking, BookingStatus } from "@/types";
-import { mockUsers, mockHostels, mockBookings } from "@/data/mockData";
+import { mockHostels, mockBookings } from "@/data/mockData";
+
+const ADMIN_ACCOUNTS: User[] = [
+  { id: "a1", name: "Admin One", email: "admin1@gmail.com", password: "admin123", role: "admin" },
+  { id: "a2", name: "Admin Two", email: "admin2@gmail.com", password: "admin456", role: "admin" },
+  { id: "a3", name: "Admin Three", email: "admin3@gmail.com", password: "admin789", role: "admin" },
+];
+
+function loadFromStorage<T>(key: string, fallback: T): T {
+  try {
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : fallback;
+  } catch { return fallback; }
+}
 
 interface AppContextType {
   currentUser: User | null;
@@ -20,18 +33,43 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | null>(null);
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [users, setUsers] = useState<User[]>(mockUsers);
-  const [hostels, setHostels] = useState<Hostel[]>(mockHostels);
-  const [bookings, setBookings] = useState<Booking[]>(mockBookings);
+  const [currentUser, setCurrentUser] = useState<User | null>(
+    loadFromStorage("currentUser", null)
+  );
+  const [users, setUsers] = useState<User[]>(
+    loadFromStorage("users", [])
+  );
+  const [hostels, setHostels] = useState<Hostel[]>(
+    loadFromStorage("hostels", mockHostels)
+  );
+  const [bookings, setBookings] = useState<Booking[]>(
+    loadFromStorage("bookings", mockBookings)
+  );
+
+  // Sync to localStorage
+  useEffect(() => { localStorage.setItem("users", JSON.stringify(users)); }, [users]);
+  useEffect(() => { localStorage.setItem("hostels", JSON.stringify(hostels)); }, [hostels]);
+  useEffect(() => { localStorage.setItem("bookings", JSON.stringify(bookings)); }, [bookings]);
+  useEffect(() => {
+    if (currentUser) localStorage.setItem("currentUser", JSON.stringify(currentUser));
+    else localStorage.removeItem("currentUser");
+  }, [currentUser]);
 
   const login = useCallback((email: string, password: string, role: UserRole) => {
+    // Admin login: check predefined accounts only
+    if (role === "admin") {
+      const admin = ADMIN_ACCOUNTS.find(a => a.email === email && a.password === password);
+      if (admin) { setCurrentUser(admin); return true; }
+      return false;
+    }
+    // Customer/Owner: check registered users in localStorage
     const user = users.find(u => u.email === email && u.password === password && u.role === role);
     if (user) { setCurrentUser(user); return true; }
     return false;
   }, [users]);
 
   const register = useCallback((name: string, email: string, password: string, role: UserRole) => {
+    if (role === "admin") return false; // no admin registration
     if (users.find(u => u.email === email)) return false;
     const newUser: User = { id: `u${Date.now()}`, name, email, password, role };
     setUsers(prev => [...prev, newUser]);
@@ -59,14 +97,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     const hostel = hostels.find(h => h.id === hostelId);
     if (!hostel) return;
     const booking: Booking = {
-      id: `b${Date.now()}`,
-      userId: currentUser.id,
-      userName: currentUser.name,
-      hostelId,
-      hostelName: hostel.name,
-      duration,
-      totalAmount: hostel.rent * duration,
-      status: "Pending",
+      id: `b${Date.now()}`, userId: currentUser.id, userName: currentUser.name,
+      hostelId, hostelName: hostel.name, duration,
+      totalAmount: hostel.rent * duration, status: "Pending",
       createdAt: new Date().toISOString().split("T")[0],
     };
     setBookings(prev => [...prev, booking]);
@@ -78,7 +111,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <AppContext.Provider value={{
-      currentUser, users, hostels, bookings,
+      currentUser, users: [...users, ...ADMIN_ACCOUNTS], hostels, bookings,
       login, register, logout,
       addHostel, updateHostel, deleteHostel,
       createBooking, updateBookingStatus,

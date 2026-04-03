@@ -88,6 +88,7 @@ export default function OwnerDashboard() {
           </div>
         )}
       </div>
+      <Footer />
     </div>
   );
 }
@@ -119,8 +120,7 @@ function OwnerBookingCard({ booking }: { booking: import("@/types").Booking }) {
             {booking.status}
           </span>
         )}
-  </div>
-      <Footer />
+      </div>
     </div>
   );
 }
