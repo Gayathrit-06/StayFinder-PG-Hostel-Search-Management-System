@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useApp } from "@/context/AppContext";
 import { Navbar } from "@/components/Navbar";
+import { Footer } from "@/components/Footer";
 import { BackButton } from "@/components/BackButton";
 import { Hostel, Gender, RoomType } from "@/types";
 import { toast } from "sonner";
