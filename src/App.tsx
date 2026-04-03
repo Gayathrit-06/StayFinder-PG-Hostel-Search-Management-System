@@ -12,6 +12,8 @@ import CustomerBookings from "./pages/CustomerBookings";
 import OwnerDashboard from "./pages/OwnerDashboard";
 import HostelForm from "./pages/HostelForm";
 import AdminDashboard from "./pages/AdminDashboard";
+import AboutPage from "./pages/AboutPage";
+import ContactPage from "./pages/ContactPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -33,6 +35,8 @@ const App = () => (
             <Route path="/owner/add-hostel" element={<HostelForm />} />
             <Route path="/owner/edit-hostel/:id" element={<HostelForm />} />
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/contact" element={<ContactPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
