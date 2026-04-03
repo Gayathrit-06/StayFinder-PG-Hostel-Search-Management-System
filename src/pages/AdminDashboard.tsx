@@ -1,5 +1,6 @@
 import { useApp } from "@/context/AppContext";
 import { Navbar } from "@/components/Navbar";
+import { Footer } from "@/components/Footer";
 import { Users, Building2, Package, Trash2, MapPin } from "lucide-react";
 
 export default function AdminDashboard() {
