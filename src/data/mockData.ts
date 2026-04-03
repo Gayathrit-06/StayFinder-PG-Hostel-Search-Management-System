@@ -12,11 +12,11 @@ const HOSTEL_IMAGES = [
 ];
 
 export const mockUsers: User[] = [
-  { id: "u1", name: "Rahul Kumar", email: "rahul@test.com", role: "user" },
-  { id: "u2", name: "Priya Sharma", email: "priya@test.com", role: "user" },
-  { id: "o1", name: "Suresh Reddy", email: "suresh@owner.com", role: "owner" },
-  { id: "o2", name: "Meena Devi", email: "meena@owner.com", role: "owner" },
-  { id: "a1", name: "Admin User", email: "admin@admin.com", role: "admin" },
+  { id: "u1", name: "Rahul Kumar", email: "rahul@test.com", password: "rahul123", role: "user" },
+  { id: "u2", name: "Priya Sharma", email: "priya@test.com", password: "priya123", role: "user" },
+  { id: "o1", name: "Suresh Reddy", email: "suresh@owner.com", password: "suresh123", role: "owner" },
+  { id: "o2", name: "Meena Devi", email: "meena@owner.com", password: "meena123", role: "owner" },
+  { id: "a1", name: "Admin User", email: "admin@admin.com", password: "admin123", role: "admin" },
 ];
 
 export const mockHostels: Hostel[] = [
