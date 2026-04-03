@@ -8,7 +8,8 @@ export function Navbar() {
 
   const handleLogout = () => {
     logout();
-    navigate("/");
+    localStorage.clear();
+    window.location.replace("/");
   };
 
   if (!currentUser) return null;

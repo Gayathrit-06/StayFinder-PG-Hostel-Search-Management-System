@@ -51,8 +51,8 @@ export function Footer() {
             <div className="flex flex-col items-center gap-2 text-sm">
               <span className="font-semibold mb-1">Quick Links</span>
               <a href="/" className="text-white/70 hover:text-white transition">Home</a>
-              <a href="#" className="text-white/70 hover:text-white transition">About Us</a>
-              <a href="#" className="text-white/70 hover:text-white transition">Contact</a>
+              <a href="/about" className="text-white/70 hover:text-white transition">About Us</a>
+              <a href="/contact" className="text-white/70 hover:text-white transition">Contact</a>
             </div>
 
             {/* Socials */}

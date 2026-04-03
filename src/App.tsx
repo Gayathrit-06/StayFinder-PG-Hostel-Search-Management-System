@@ -35,6 +35,8 @@ const App = () => (
             <Route path="/owner/add-hostel" element={<HostelForm />} />
             <Route path="/owner/edit-hostel/:id" element={<HostelForm />} />
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/contact" element={<ContactPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
