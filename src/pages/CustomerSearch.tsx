@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { useApp } from "@/context/AppContext";
 import { Navbar } from "@/components/Navbar";
+import { Footer } from "@/components/Footer";
 import { locationTrie } from "@/lib/trie";
 import { useNavigate } from "react-router-dom";
 import { Search, MapPin, IndianRupee, BedDouble, Users } from "lucide-react";
