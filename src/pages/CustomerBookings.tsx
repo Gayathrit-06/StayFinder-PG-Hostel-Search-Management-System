@@ -1,5 +1,6 @@
 import { useApp } from "@/context/AppContext";
 import { Navbar } from "@/components/Navbar";
+import { Footer } from "@/components/Footer";
 import { BackButton } from "@/components/BackButton";
 import { Clock, CheckCircle, XCircle } from "lucide-react";
 
