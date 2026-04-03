@@ -25,8 +25,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [hostels, setHostels] = useState<Hostel[]>(mockHostels);
   const [bookings, setBookings] = useState<Booking[]>(mockBookings);
 
-  const login = useCallback((email: string, _password: string, role: UserRole) => {
-    const user = users.find(u => u.email === email && u.role === role);
+  const login = useCallback((email: string, password: string, role: UserRole) => {
+    const user = users.find(u => u.email === email && u.password === password && u.role === role);
     if (user) { setCurrentUser(user); return true; }
     return false;
   }, [users]);
