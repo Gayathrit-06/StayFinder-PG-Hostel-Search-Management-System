@@ -12,6 +12,8 @@ import CustomerBookings from "./pages/CustomerBookings";
 import OwnerDashboard from "./pages/OwnerDashboard";
 import HostelForm from "./pages/HostelForm";
 import AdminDashboard from "./pages/AdminDashboard";
+import AboutPage from "./pages/AboutPage";
+import ContactPage from "./pages/ContactPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
