@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useApp } from "@/context/AppContext";
 import { Navbar } from "@/components/Navbar";
+import { Footer } from "@/components/Footer";
 import { BackButton } from "@/components/BackButton";
 import { MapPin, Utensils, Wifi, Wind, WashingMachine, BedDouble, Users, ExternalLink, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
@@ -134,6 +135,7 @@ export default function HostelDetails() {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

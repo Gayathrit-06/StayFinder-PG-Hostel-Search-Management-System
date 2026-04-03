@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useApp } from "@/context/AppContext";
 import { Navbar } from "@/components/Navbar";
+import { Footer } from "@/components/Footer";
 import { useNavigate } from "react-router-dom";
 import { Plus, Pencil, Trash2, MapPin, Building2, Package } from "lucide-react";
 
@@ -118,7 +119,8 @@ function OwnerBookingCard({ booking }: { booking: import("@/types").Booking }) {
             {booking.status}
           </span>
         )}
-      </div>
+  </div>
+      <Footer />
     </div>
   );
 }
