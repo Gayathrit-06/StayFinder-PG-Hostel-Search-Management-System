@@ -89,7 +89,7 @@ export default function AuthPage() {
               />
             </div>
             <button type="submit" className="w-full gradient-btn text-center">
-              {isLogin ? "Login" : "Register"}
+              {isAdminRole ? "Login" : (isLogin ? "Login" : "Register")}
             </button>
           </form>
           <p className="text-center text-sm text-muted-foreground mt-4">
