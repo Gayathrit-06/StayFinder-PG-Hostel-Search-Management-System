@@ -124,6 +124,7 @@ export default function CustomerSearch() {
           </div>
         )}
       </div>
+      <Footer />
     </div>
   );
 }

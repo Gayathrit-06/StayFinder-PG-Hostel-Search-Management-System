@@ -47,6 +47,7 @@ export default function CustomerBookings() {
           </div>
         )}
       </div>
+      <Footer />
     </div>
   );
 }

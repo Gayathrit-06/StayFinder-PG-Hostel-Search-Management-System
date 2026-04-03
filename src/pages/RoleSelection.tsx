@@ -104,6 +104,7 @@ export default function RoleSelection() {
           ))}
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

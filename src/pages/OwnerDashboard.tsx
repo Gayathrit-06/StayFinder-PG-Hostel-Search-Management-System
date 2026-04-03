@@ -119,7 +119,8 @@ function OwnerBookingCard({ booking }: { booking: import("@/types").Booking }) {
             {booking.status}
           </span>
         )}
-      </div>
+  </div>
+      <Footer />
     </div>
   );
 }

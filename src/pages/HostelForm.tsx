@@ -146,6 +146,7 @@ export default function HostelForm() {
           </button>
         </form>
       </div>
+      <Footer />
     </div>
   );
 }

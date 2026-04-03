@@ -135,6 +135,7 @@ export default function HostelDetails() {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }
