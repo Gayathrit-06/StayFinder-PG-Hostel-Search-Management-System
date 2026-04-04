@@ -8,7 +8,6 @@ export function Navbar() {
 
   const handleLogout = () => {
     logout();
-    localStorage.clear();
     window.location.replace("/");
   };
 
