@@ -39,14 +39,16 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [users, setUsers] = useState<User[]>(
     loadFromStorage("users", [])
   );
-  const [hostels, setHostels] = useState<Hostel[]>(
-    loadFromStorage("hostels", mockHostels)
-  );
-  const [bookings, setBookings] = useState<Booking[]>(
-    loadFromStorage("bookings", mockBookings)
-  );
+  const [hostels, setHostels] = useState<Hostel[]>(() => {
+    const stored = loadFromStorage<Hostel[]>("hostels", []);
+    return stored.length > 0 ? stored : mockHostels;
+  });
+  const [bookings, setBookings] = useState<Booking[]>(() => {
+    const stored = loadFromStorage<Booking[]>("bookings", []);
+    return stored.length > 0 ? stored : mockBookings;
+  });
 
-  // Sync to localStorage
+  // Sync to localStorage whenever state changes
   useEffect(() => { localStorage.setItem("users", JSON.stringify(users)); }, [users]);
   useEffect(() => { localStorage.setItem("hostels", JSON.stringify(hostels)); }, [hostels]);
   useEffect(() => { localStorage.setItem("bookings", JSON.stringify(bookings)); }, [bookings]);
@@ -54,6 +56,20 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     if (currentUser) localStorage.setItem("currentUser", JSON.stringify(currentUser));
     else localStorage.removeItem("currentUser");
   }, [currentUser]);
+
+  // Listen for storage changes from other tabs
+  useEffect(() => {
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === "hostels" && e.newValue) {
+        setHostels(JSON.parse(e.newValue));
+      }
+      if (e.key === "bookings" && e.newValue) {
+        setBookings(JSON.parse(e.newValue));
+      }
+    };
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, []);
 
   const login = useCallback((email: string, password: string, role: UserRole) => {
     // Admin login: check predefined accounts only
