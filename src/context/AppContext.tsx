@@ -39,12 +39,14 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [users, setUsers] = useState<User[]>(
     loadFromStorage("users", [])
   );
-  const [hostels, setHostels] = useState<Hostel[]>(
-    loadFromStorage("hostels", mockHostels)
-  );
-  const [bookings, setBookings] = useState<Booking[]>(
-    loadFromStorage("bookings", mockBookings)
-  );
+  const [hostels, setHostels] = useState<Hostel[]>(() => {
+    const stored = loadFromStorage<Hostel[]>("hostels", []);
+    return stored.length > 0 ? stored : mockHostels;
+  });
+  const [bookings, setBookings] = useState<Booking[]>(() => {
+    const stored = loadFromStorage<Booking[]>("bookings", []);
+    return stored.length > 0 ? stored : mockBookings;
+  });
 
   // Sync to localStorage
   useEffect(() => { localStorage.setItem("users", JSON.stringify(users)); }, [users]);
