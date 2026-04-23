@@ -10,9 +10,9 @@ import { toast } from "sonner";
 
 export default function HostelDetails() {
   const { id } = useParams<{ id: string }>();
-  const { hostels, createBooking, currentUser } = useApp();
+  const { getHostelById, createBooking, currentUser } = useApp();
   const navigate = useNavigate();
-  const hostel = hostels.find(h => h.id === id);
+  const hostel = id ? getHostelById(id) : undefined; // O(1) HashMap lookup
   const [duration, setDuration] = useState(1);
   const [showBooking, setShowBooking] = useState(false);
   const [selectedImg, setSelectedImg] = useState(0);
