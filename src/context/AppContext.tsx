@@ -1,6 +1,10 @@
-import React, { createContext, useContext, useState, useCallback, useEffect } from "react";
+import React, { createContext, useContext, useState, useCallback, useEffect, useRef } from "react";
 import { User, UserRole, Hostel, Booking, BookingStatus } from "@/types";
 import { mockHostels, mockBookings } from "@/data/mockData";
+import { HostelBST } from "@/lib/bst";
+import { HostelAVL } from "@/lib/avl";
+import { HostelHashMap } from "@/lib/hashmap";
+import { Trie } from "@/lib/trie";
 
 const ADMIN_ACCOUNTS: User[] = [
   { id: "a1", name: "Admin One", email: "admin1@gmail.com", password: "admin123", role: "admin" },
@@ -28,6 +32,11 @@ interface AppContextType {
   deleteHostel: (id: string) => void;
   createBooking: (hostelId: string, duration: number) => void;
   updateBookingStatus: (bookingId: string, status: BookingStatus) => void;
+  // Data structure accessors
+  getHostelById: (id: string) => Hostel | undefined;
+  getHostelsByRentRange: (min: number, max: number) => Hostel[];
+  getHostelsSortedByRent: () => Hostel[];
+  searchLocations: (prefix: string) => string[];
 }
 
 const AppContext = createContext<AppContextType | null>(null);
@@ -47,6 +56,47 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     const stored = loadFromStorage<Booking[]>("bookings", []);
     return stored.length > 0 ? stored : mockBookings;
   });
+
+  // === DATA STRUCTURES (rebuilt whenever hostels change) ===
+  const bstRef = useRef<HostelBST>(HostelBST.fromArray(hostels));
+  const avlRef = useRef<HostelAVL>(HostelAVL.fromArray(hostels));
+  const hashMapRef = useRef<HostelHashMap>(HostelHashMap.fromArray(hostels));
+  const locationTrieRef = useRef<Trie>(new Trie());
+
+  // Rebuild all data structures when hostels change
+  useEffect(() => {
+    bstRef.current = HostelBST.fromArray(hostels);
+    avlRef.current = HostelAVL.fromArray(hostels);
+    hashMapRef.current = HostelHashMap.fromArray(hostels);
+
+    // Rebuild location trie from current hostel locations
+    const trie = new Trie();
+    const seen = new Set<string>();
+    hostels.forEach(h => {
+      if (!seen.has(h.location)) {
+        trie.insert(h.location);
+        seen.add(h.location);
+      }
+    });
+    locationTrieRef.current = trie;
+  }, [hostels]);
+
+  // Data structure accessor functions
+  const getHostelById = useCallback((id: string): Hostel | undefined => {
+    return hashMapRef.current.get(id); // O(1) HashMap lookup
+  }, []);
+
+  const getHostelsByRentRange = useCallback((min: number, max: number): Hostel[] => {
+    return bstRef.current.filterByRent(min, max); // BST range search
+  }, []);
+
+  const getHostelsSortedByRent = useCallback((): Hostel[] => {
+    return avlRef.current.getSortedByRent(); // AVL in-order traversal
+  }, []);
+
+  const searchLocations = useCallback((prefix: string): string[] => {
+    return locationTrieRef.current.search(prefix); // Trie prefix search
+  }, []);
 
   // Sync to localStorage whenever state changes
   useEffect(() => { localStorage.setItem("users", JSON.stringify(users)); }, [users]);
@@ -72,20 +122,18 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const login = useCallback((email: string, password: string, role: UserRole) => {
-    // Admin login: check predefined accounts only
     if (role === "admin") {
       const admin = ADMIN_ACCOUNTS.find(a => a.email === email && a.password === password);
       if (admin) { setCurrentUser(admin); return true; }
       return false;
     }
-    // Customer/Owner: check registered users in localStorage
     const user = users.find(u => u.email === email && u.password === password && u.role === role);
     if (user) { setCurrentUser(user); return true; }
     return false;
   }, [users]);
 
   const register = useCallback((name: string, email: string, password: string, role: UserRole) => {
-    if (role === "admin") return false; // no admin registration
+    if (role === "admin") return false;
     if (users.find(u => u.email === email)) return false;
     const newUser: User = { id: `u${Date.now()}`, name, email, password, role };
     setUsers(prev => [...prev, newUser]);
@@ -99,7 +147,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const addHostel = useCallback((hostel: Omit<Hostel, "id">) => {
-    const newHostel = { ...hostel, id: `h${Date.now()}` };
+    const newHostel = { ...hostel, id: `h${Date.now()}` } as Hostel;
     setHostels(prev => {
       const next = [...prev, newHostel];
       localStorage.setItem("hostels", JSON.stringify(next));
@@ -130,7 +178,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const createBooking = useCallback((hostelId: string, duration: number) => {
     if (!currentUser) return;
-    const hostel = hostels.find(h => h.id === hostelId);
+    // Use HashMap for O(1) hostel lookup instead of array.find
+    const hostel = hashMapRef.current.get(hostelId);
     if (!hostel) return;
     const booking: Booking = {
       id: `b${Date.now()}`, userId: currentUser.id, userName: currentUser.name,
@@ -143,7 +192,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       localStorage.setItem("bookings", JSON.stringify(next));
       return next;
     });
-  }, [currentUser, hostels]);
+  }, [currentUser]);
 
   const updateBookingStatus = useCallback((bookingId: string, status: BookingStatus) => {
     setBookings(prev => {
@@ -159,6 +208,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       login, register, logout,
       addHostel, updateHostel, deleteHostel,
       createBooking, updateBookingStatus,
+      getHostelById, getHostelsByRentRange, getHostelsSortedByRent, searchLocations,
     }}>
       {children}
     </AppContext.Provider>

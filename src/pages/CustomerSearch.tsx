@@ -2,13 +2,12 @@ import { useState, useMemo } from "react";
 import { useApp } from "@/context/AppContext";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
-import { locationTrie } from "@/lib/trie";
 import { useNavigate } from "react-router-dom";
 import { Search, MapPin, IndianRupee, BedDouble, Users } from "lucide-react";
 import { Gender, RoomType } from "@/types";
 
 export default function CustomerSearch() {
-  const { hostels } = useApp();
+  const { hostels, searchLocations, getHostelsByRentRange, getHostelsSortedByRent } = useApp();
   const navigate = useNavigate();
 
   const [location, setLocation] = useState("");
@@ -17,22 +16,29 @@ export default function CustomerSearch() {
   const [roomType, setRoomType] = useState<RoomType | "">("");
   const [minRent, setMinRent] = useState("");
   const [maxRent, setMaxRent] = useState("");
+  const [sortByRent, setSortByRent] = useState(false);
 
+  // Trie-based location autocomplete
   const handleLocationChange = (val: string) => {
     setLocation(val);
-    setSuggestions(val.length > 0 ? locationTrie.search(val).slice(0, 6) : []);
+    setSuggestions(val.length > 0 ? searchLocations(val).slice(0, 6) : []);
   };
 
   const filtered = useMemo(() => {
-    return hostels.filter(h => {
+    // Use BST for rent range filtering when rent filters are active
+    let base = (minRent || maxRent)
+      ? getHostelsByRentRange(Number(minRent) || 0, Number(maxRent) || Infinity)
+      : sortByRent
+        ? getHostelsSortedByRent() // AVL tree in-order traversal for sorted results
+        : hostels;
+
+    return base.filter(h => {
       if (location && !h.location.toLowerCase().includes(location.toLowerCase())) return false;
       if (gender && h.gender !== gender && h.gender !== "Any") return false;
       if (roomType && h.roomType !== roomType) return false;
-      if (minRent && h.rent < Number(minRent)) return false;
-      if (maxRent && h.rent > Number(maxRent)) return false;
       return true;
     });
-  }, [hostels, location, gender, roomType, minRent, maxRent]);
+  }, [hostels, location, gender, roomType, minRent, maxRent, sortByRent, getHostelsByRentRange, getHostelsSortedByRent]);
 
   return (
     <div className="page-container bg-background">
@@ -44,12 +50,12 @@ export default function CustomerSearch() {
 
         {/* Search Filters */}
         <div className="glass-card p-6 mb-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
             <div className="relative">
               <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <input
                 value={location} onChange={e => handleLocationChange(e.target.value)}
-                placeholder="Location" className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-muted border border-border focus:border-primary outline-none text-sm text-foreground"
+                placeholder="Location (Trie search)" className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-muted border border-border focus:border-primary outline-none text-sm text-foreground"
               />
               {suggestions.length > 0 && (
                 <div className="absolute z-20 top-full left-0 right-0 mt-1 bg-card border border-border rounded-xl shadow-lg overflow-hidden">
@@ -83,14 +89,29 @@ export default function CustomerSearch() {
             <div className="relative">
               <IndianRupee className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <input type="number" value={minRent} onChange={e => setMinRent(e.target.value)}
-                placeholder="Min Rent" className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-muted border border-border focus:border-primary outline-none text-sm text-foreground" />
+                placeholder="Min Rent (BST)" className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-muted border border-border focus:border-primary outline-none text-sm text-foreground" />
             </div>
             <div className="relative">
               <IndianRupee className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <input type="number" value={maxRent} onChange={e => setMaxRent(e.target.value)}
-                placeholder="Max Rent" className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-muted border border-border focus:border-primary outline-none text-sm text-foreground" />
+                placeholder="Max Rent (BST)" className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-muted border border-border focus:border-primary outline-none text-sm text-foreground" />
+            </div>
+            <div className="flex items-center gap-2">
+              <label className="flex items-center gap-2 cursor-pointer text-sm text-foreground">
+                <input type="checkbox" checked={sortByRent} onChange={e => setSortByRent(e.target.checked)}
+                  className="rounded border-border" />
+                Sort by Rent (AVL)
+              </label>
             </div>
           </div>
+        </div>
+
+        {/* Data Structure Info */}
+        <div className="flex flex-wrap gap-2 mb-4">
+          <span className="text-xs px-3 py-1 rounded-full bg-primary/10 text-primary font-medium">🌳 Trie: Location Search</span>
+          <span className="text-xs px-3 py-1 rounded-full bg-primary/10 text-primary font-medium">🔍 BST: Rent Range Filter</span>
+          <span className="text-xs px-3 py-1 rounded-full bg-primary/10 text-primary font-medium">⚖️ AVL: Sorted Display</span>
+          <span className="text-xs px-3 py-1 rounded-full bg-primary/10 text-primary font-medium">#️⃣ HashMap: O(1) Lookup</span>
         </div>
 
         {/* Results */}
