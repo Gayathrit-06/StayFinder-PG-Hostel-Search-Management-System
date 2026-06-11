@@ -6,4 +6,4 @@ Features include authentication, hostel search, booking system, role-based dashb
 
 Start with `npm install` and `npm start`.
 
-Technologies Used: HTML, CSS, JavaScript, React.js, Node.js, PostgreSQL.
+Technologies Used: HTML, CSS, JavaScript, React.js, Node.js, DSA(BST, AVL, TRIE, HASHMAP).
